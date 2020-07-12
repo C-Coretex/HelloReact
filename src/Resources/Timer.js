@@ -28,7 +28,6 @@ class Timer extends React.Component {
     render() {
         return (
             <div>
-                <h2>Hey {this.props.name}!</h2>
                 <h4>It's {this.state.date.toTimeString().split(' ')[0]} here</h4>
             </div>
         )

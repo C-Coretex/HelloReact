@@ -1,6 +1,6 @@
 import React from "react"
 import ReactDOM from "react-dom"
 
-import Timer from "./Timer"
+import App from "./App"
 
-ReactDOM.render(<Timer name="Ismail"/>, document.getElementById("root"))
+ReactDOM.render(<App name="Ismail"/>, document.getElementById("root"))
