@@ -1,16 +1,11 @@
 import React, {Component} from "react"
+import "./style.css"
+
 
 import Timer from "./Resources/Timer"
 import FileSelector from "./Resources/FileSelector"
 
 class App extends Component {
-    constructor() {
-        super()
-        this.state = {
-            //file: ""
-        }
-    }    
-
     render() {
         return (
             <div>
