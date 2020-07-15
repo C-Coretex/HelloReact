@@ -3,4 +3,4 @@ import ReactDOM from "react-dom"
 
 import App from "./App"
 
-ReactDOM.render(<App name="Ismail"/>, document.getElementById("root"))
+ReactDOM.render(<App name="Valeron"/>, document.getElementById("root"))
