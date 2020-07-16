@@ -18,7 +18,7 @@ class FileSelector extends React.Component {
     
     onFilechange = (event) => {
         this.setState({
-            file: URL.createObjectURL(event.target.files[0])
+            file: event.target.files[0]
         })
     }
     

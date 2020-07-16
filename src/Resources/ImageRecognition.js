@@ -9,7 +9,7 @@ class ImageRecognition extends React.Component {
         }
     }
     
-    componentDidMount() {
+    /*componentDidMount() {
         console.log("bbbbbbbb");
         console.log(this.props.file)
         
@@ -21,6 +21,18 @@ class ImageRecognition extends React.Component {
             image: this.props.file,
         })
         console.log(resp)
+    }*/
+    
+    componentDidMount() {
+        var mnist = require('mnist');
+
+        var set = mnist.set(4, 4);
+
+        var trainingSet = set.training;
+        var testSet = set.test;
+        
+        console.log(trainingSet)
+        console.log(testSet)
     }
     
     render() {
