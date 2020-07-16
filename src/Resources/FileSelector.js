@@ -16,23 +16,24 @@ class FileSelector extends React.Component {
         }
     }
     
+    onFilechange = (event) => {
+        this.setState({
+            file: URL.createObjectURL(event.target.files[0])
+        })
+    }
+    
     render() { 
         return(
             <div>
                 <input type = "file"
-                onChange = {
-                    (event) => {
-                        this.setState({
-                            file: event.target.files[0]
-                        })
-                        console.log(this.state.file)
-                    }
-                }/>
+                    onChange={this.onFilechange}/>
                 <h5>{this.state.file ?
                     <p> Your file is {this.state.file.name} with the size of {getFileSize(this.state.file)} Mb </p> :
                     <p> You haven 't chosen any file</p>}</h5>
                 
-                <ImageRecognition file={this.state.file} />
+                <div> {this.state.file ?
+                    <ImageRecognition file={this.state.file} /> :
+                    null} </div>
             </div>
         )
     }
