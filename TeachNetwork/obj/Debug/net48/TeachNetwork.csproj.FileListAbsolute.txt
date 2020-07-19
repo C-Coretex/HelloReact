@@ -16,3 +16,6 @@ C:\Users\valer\Desktop\GitSave\HelloReact\TeachNetwork\obj\Debug\net48\TeachNetw
 C:\Users\valer\Desktop\GitSave\HelloReact\TeachNetwork\obj\Debug\net48\TeachNetwork.csproj.CopyComplete
 C:\Users\valer\Desktop\GitSave\HelloReact\TeachNetwork\obj\Debug\net48\TeachNetwork.exe
 C:\Users\valer\Desktop\GitSave\HelloReact\TeachNetwork\obj\Debug\net48\TeachNetwork.pdb
+C:\Users\valer\Desktop\GitSave\HelloReact\TeachNetwork\obj\Debug\net48\TeachNetwork.exe.config
+C:\Users\valer\Desktop\GitSave\HelloReact\TeachNetwork\bin\Debug\net48\MNIST.IO.dll
+C:\Users\valer\Desktop\GitSave\HelloReact\TeachNetwork\bin\Debug\net48\System.Diagnostics.DiagnosticSource.dll
