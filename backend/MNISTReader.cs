@@ -1,9 +1,8 @@
-﻿using System;
-using NN;
+using System;
 using System.Linq;
 using System.IO;
 
-namespace Trach
+namespace MNISTReader
 {
 	public static class ArrayExtensions
 	{
@@ -37,7 +36,7 @@ namespace Trach
 	/// <summary>
 	/// Class for reading the MNIST dataset which can be found here: http://yann.lecun.com/exdb/mnist/
 	/// </summary>
-	public class MNISTReader
+	public static class Reader
 	{
 		private const int OFFSET_SIZE = 4;
 
@@ -54,7 +53,7 @@ namespace Trach
 		/// <summary>
 		/// Reads the labels and images from the MNIST dataset and puts them in <see cref="LabeledTrainingData"/>
 		/// </summary>
-		public LabeledTrainingData[] LoadDigitImages(byte[] labelBytes, byte[] imageBytes)
+		public static LabeledTrainingData[] LoadDigitImages(byte[] labelBytes, byte[] imageBytes)
 		{
 
 			var numberOfLabels = BitConverter.ToInt32(labelBytes.CopyRange(NUMBER_ITEMS_OFFSET, 4).Reverse().ToArray(), 0);
@@ -75,36 +74,6 @@ namespace Trach
 				images[i] = new LabeledTrainingData(imageData, labels);
 			}
 			return images;
-		}
-	}
-	
-	class TeachNetwork
-	{
-		static void Main()
-		{
-			Console.WriteLine("Hello World!");
-			
-			string path = Path.Combine(AppContext.BaseDirectory, @"..\..\..\data\");
-			
-			var labelData = File.ReadAllBytes(path + "train-labels.idx1-ubyte");
-            var imageData = File.ReadAllBytes(path + "train-images.idx3-ubyte");
-
-			MNISTReader testReader = new MNISTReader();
-
-			var test = testReader.LoadDigitImages(labelData, imageData);
-			
-			foreach(var item in test[0].Data)
-				Console.Write(item + " ");
-			
-			Console.WriteLine();	
-			Console.WriteLine("--------------------------------------------------------------------------------------------------------------------------------");
-			Console.WriteLine();
-			Console.WriteLine();
-			
-			foreach(var item in test[0].Label)
-				Console.Write(item + " ");
-
-			Console.WriteLine("\nCompleted");
 		}
 	}
 }
