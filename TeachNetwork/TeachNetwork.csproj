@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net48</TargetFramework>
+    <RootNamespace>Back_end</RootNamespace>
+  </PropertyGroup>
+  
+     <ItemGroup>
+     <Reference Include="NeuralNetwork">
+       <HintPath>..\Dlls\NeuralNetwork.dll</HintPath>
+     </Reference>
+    </ItemGroup>
+  
+     <ItemGroup>
+       <PackageReference Include="Accord.DataSets" Version="3.8.0" />
+     </ItemGroup>
+  
+</Project>

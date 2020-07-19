@@ -1,0 +1,14 @@
+{
+  "version": 2,
+  "dgSpecHash": "cRDgkEn9dyCp0IFlGy6uZCzqXfFUrwJ4Z8j5IqG9WLwqD3eRZAkq0/CT1B3LeZIUZESXwFEdbR9p1eHW8cLGvw==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\valer\\Desktop\\GitSave\\HelloReact\\TeachNetwork\\TeachNetwork.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\valer\\.nuget\\packages\\accord\\3.8.0\\accord.3.8.0.nupkg.sha512",
+    "C:\\Users\\valer\\.nuget\\packages\\accord.datasets\\3.8.0\\accord.datasets.3.8.0.nupkg.sha512",
+    "C:\\Users\\valer\\.nuget\\packages\\accord.io\\3.8.0\\accord.io.3.8.0.nupkg.sha512",
+    "C:\\Users\\valer\\.nuget\\packages\\accord.math\\3.8.0\\accord.math.3.8.0.nupkg.sha512",
+    "C:\\Users\\valer\\.nuget\\packages\\sharpziplib\\0.86.0\\sharpziplib.0.86.0.nupkg.sha512"
+  ],
+  "logs": []
+}
