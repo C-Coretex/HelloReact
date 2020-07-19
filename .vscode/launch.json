@@ -10,9 +10,9 @@
             "request": "launch",
             "preLaunchTask": "build",
             // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceFolder}/Back-end/bin/Debug/netcoreapp3.1/Back-end.dll",
+            "program": "${workspaceFolder}/backend/bin/Debug/netcoreapp3.1/TeachNetwork.dll",
             "args": [],
-            "cwd": "${workspaceFolder}/Back-end",
+            "cwd": "${workspaceFolder}/backend",
             // For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console
             "console": "internalConsole",
             "stopAtEntry": false

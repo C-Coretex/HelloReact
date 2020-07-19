@@ -19,12 +19,12 @@ namespace MNISTReader
 	
 	public class LabeledTrainingData
 	{
-		public float[] Data { get; }
-		public float[] Label { get; }
+		public double[] Data { get; }
+		public double[] Label { get; }
 
-		public LabeledTrainingData(byte[] data, float[] label)
+		public LabeledTrainingData(byte[] data, double[] label)
 		{
-			Data = new float[data.Length];
+			Data = new double[data.Length];
 			for (var i = 0; i < data.Length; i++)
 			{
 				Data[i] = data[i] / 255f;
@@ -68,7 +68,7 @@ namespace MNISTReader
 			for (var i = 0; i < numberOfLabels; i++)
 			{
 				var label = labelBytes[OFFSET_SIZE + ITEMS_SIZE + i];
-				var labels = new float[10];
+				var labels = new double[10];
 				labels[label] = 1;
 				var imageData = imageBytes.CopyRange(i * IMAGE_SIZE + IMAGE_OFFSET, IMAGE_SIZE);
 				images[i] = new LabeledTrainingData(imageData, labels);
