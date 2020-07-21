@@ -4,11 +4,13 @@ using MNISTReader;
 using System.IO;
 using System.Globalization;
 using System.Threading.Tasks;
+using System.Threading;
 
 namespace NNFunctions
 {
 	public class TeachNetwork
 	{
+        private CancellationToken ct;
 		readonly static string path = @"C:\Users\valer\Desktop\GitSave\HelloReact\backend\data\";
 
 		public double MomentTemp = 0.5;
@@ -55,10 +57,16 @@ namespace NNFunctions
 		}
 
 
-		public async Task Start()
+		public async Task Start(CancellationTokenSource tokenSource2)
 		{
-			await Task.Run(() =>
+			ct = tokenSource2.Token;
+			
+			Console.WriteLine("NeuralNetwork created");
+			
+			await Task.Run(() => 
 			{
+				ct.ThrowIfCancellationRequested();
+
 				var sepByThous = (NumberFormatInfo)CultureInfo.InvariantCulture.NumberFormat.Clone();
 				sepByThous.NumberGroupSeparator = " ";
 
@@ -115,6 +123,13 @@ namespace NNFunctions
 
 						//if (iteration++ % refreshSpeed == 0)
 							//Console.WriteLine("Iteration: " + trainingSets + " | " + iteration.ToString("#,0", sepByThous) + "  current error = " + error + "% " + "  average error = " + Math.Round(errorSum / train.GetLength(0) * 100, 5) + "% " + ((double)sw.ElapsedMilliseconds / 1000).ToString("#,0.000", sepByThous) + " sec");
+					
+						if(ct.IsCancellationRequested)
+						{
+							Console.WriteLine("\nI'm disposing :'(\n");
+
+							ct.ThrowIfCancellationRequested();
+						}
 					}
 					++trainingSets;
 				} while (errorSum / train.GetLength(0) * 100 > terminatingErrorProcents); //while average error procent is greater tnah TEP - continue
@@ -131,7 +146,7 @@ namespace NNFunctions
 
 				//network.SaveNetwork(@"C:\s\Neural.aaa");
 				#endregion
-			});
+			}, tokenSource2.Token);
 		}
 	}
 }

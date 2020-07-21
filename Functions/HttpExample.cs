@@ -9,12 +9,18 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using NNFunctions;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace Functions
 {
 	public static class AsyncNN
 	{
-		public static Dictionary<int, Task> asyncNeuralNetwork = new Dictionary<int, Task>();
+		public struct NN
+		{
+			public CancellationTokenSource CancellationToken { get; set; }
+			public Task AsyncTask { get; set; }
+		}
+		public static Dictionary<int, NN> asyncNeuralNetwork = new Dictionary<int, NN>();
 	}
 
 	public static class HttpFunctions
@@ -31,10 +37,12 @@ namespace Functions
 			{
 				var curNN = new TeachNetwork();
 
-				var task = curNN.Start();
+				var cancellationToken = new CancellationTokenSource();
+
+				var task = curNN.Start(cancellationToken);
 				task.ConfigureAwait(false).GetAwaiter();
 
-				AsyncNN.asyncNeuralNetwork.Add(AsyncNN.asyncNeuralNetwork.Count, task);
+				AsyncNN.asyncNeuralNetwork.Add(AsyncNN.asyncNeuralNetwork.Count, new AsyncNN.NN{CancellationToken = cancellationToken, AsyncTask = task});
 			}
 			catch (Exception ex)
 			{
@@ -43,17 +51,20 @@ namespace Functions
 
 			return new OkObjectResult(AsyncNN.asyncNeuralNetwork.Count - 1); //Key so the used could access to the sertain NeuralNetwork
 		}
-		
-		
+
+
 		[FunctionName("StopNN")]
 		public static async Task<IActionResult> StopNN([HttpTrigger(AuthorizationLevel.Function, "post", Route = null)] HttpRequest req, ILogger log)
 		{
 			log.LogInformation("C# HTTP trigger function processed a request.");
-			
+
 			string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
 			var data = JsonConvert.DeserializeObject<int>(requestBody);
 
-			var neuralNetwork = AsyncNN.asyncNeuralNetwork[data];
+			var NN = AsyncNN.asyncNeuralNetwork[data];
+			
+			NN.CancellationToken.Cancel();
+			NN.CancellationToken.Dispose();
 
 			return new OkObjectResult("success"); //Key so the used could access to the sertain NeuralNetwork
 		}
