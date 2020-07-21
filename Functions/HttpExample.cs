@@ -7,29 +7,44 @@ using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using NNFunctions;
 
 namespace Functions
 {
-    public static class HttpExample
-    {
-        [FunctionName("HttpExample")]
-        public static async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Function, "post", Route = null)] HttpRequest req,
-            ILogger log)
-        {
-            log.LogInformation("C# HTTP trigger function processed a request.");
+	public class Person
+	{
+		public string Name { get; set; }
+		public int Age { get; set; }
+	}
 
-            string name = req.Query["name"];
+	public static class HttpExample
+	{
+		[FunctionName("HttpExample")]
+		public static async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Function, "post", Route = null)] HttpRequest req, ILogger log)
+		{
+			log.LogInformation("C# HTTP trigger function processed a request.");
 
-            string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-            dynamic data = JsonConvert.DeserializeObject(requestBody);
-            name = name ?? data?.name;
+			string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+			var data = JsonConvert.DeserializeObject<Person>(requestBody);
 
-            string responseMessage = string.IsNullOrEmpty(name)
-                ? "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response."
-                : $"Hello, {name}. This HTTP triggered function executed successfully.";
+			string responseMessage = string.IsNullOrEmpty(data.Name)
+				? "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response."
+				: $"Hello, {data.Name} withe the age {data.Age}. This HTTP triggered function executed successfully.";
 
-            return new OkObjectResult(responseMessage);
-        }
-    }
+
+			var test = new TeachNetwork();
+
+			test.falseBool = true;
+			try
+			{
+				TeachNetwork.Main().ConfigureAwait(false);
+			}
+			catch (Exception ex)
+			{
+				return new BadRequestObjectResult(ex);
+			}
+
+			return new OkObjectResult(test);
+		}
+	}
 }

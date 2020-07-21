@@ -15,4 +15,11 @@
       <CopyToPublishDirectory>Never</CopyToPublishDirectory>
     </None>
   </ItemGroup>
+  
+    <ItemGroup>
+     <Reference Include="NNFunctions">
+       <HintPath>..\backend\bin\Debug\netcoreapp3.1\TeachNetwork.dll</HintPath>
+     </Reference>
+    </ItemGroup>
+  
 </Project>
