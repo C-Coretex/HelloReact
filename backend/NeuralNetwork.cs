@@ -11,17 +11,15 @@ namespace NNFunctions
 	{
 		readonly static string path = @"C:\Users\valer\Desktop\GitSave\HelloReact\backend\data\";
 
-		public bool falseBool = false;
-
-		const double MomentTemp = 0.5;
-		const double LearningRateTemp = 0.1;
-		const string NeuronsAndLayers = "784 26+ 16 10"; //"[0]-InputNeurons, [1]-Neurons In 1-st HiddenLayer,
+		public double MomentTemp = 0.5;
+		public double LearningRateTemp = 0.1;
+		public string NeuronsAndLayers = "784 26+ 16 10"; //"[0]-InputNeurons, [1]-Neurons In 1-st HiddenLayer,
 													  //  [2]-Neurons In 2-nd HiddenLayer,[..],[n-1]-Neurons In (n-1)-th HiddenLayer, [n]-OutputNeurons"
 													  //   put + in each layer (except OUTPUT) to add bias
-		readonly static double terminatingErrorProcents = 0.00011; //The average error procent on which we want to end training
-		static readonly uint refreshSpeed = 1800;
+		public double terminatingErrorProcents = 0.00011; //The average error procent on which we want to end training
+		//public static readonly uint refreshSpeed = 1800;
 
-		private static uint CheckForMistakes(ref NeuralNetwork network, ref LabeledTrainingData[] testData)
+		private uint CheckForMistakes(ref NeuralNetwork network, ref LabeledTrainingData[] testData)
 		{	
 			uint errCount = 0;
 
@@ -57,7 +55,7 @@ namespace NNFunctions
 		}
 
 
-		public static async Task Main()
+		public async Task Start()
 		{
 			await Task.Run(() =>
 			{
@@ -85,8 +83,6 @@ namespace NNFunctions
 					Moment = MomentTemp,
 					LearningRate = LearningRateTemp
 				};
-
-				Console.WriteLine("I'm created");
 
 				System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
 				sw.Start();
@@ -117,8 +113,8 @@ namespace NNFunctions
 
 						network.TeachNetwork(train[i].Label);
 
-						if (iteration++ % refreshSpeed == 0)
-							Console.WriteLine("Iteration: " + trainingSets + " | " + iteration.ToString("#,0", sepByThous) + "  current error = " + error + "% " + "  average error = " + Math.Round(errorSum / train.GetLength(0) * 100, 5) + "% " + ((double)sw.ElapsedMilliseconds / 1000).ToString("#,0.000", sepByThous) + " sec");
+						//if (iteration++ % refreshSpeed == 0)
+							//Console.WriteLine("Iteration: " + trainingSets + " | " + iteration.ToString("#,0", sepByThous) + "  current error = " + error + "% " + "  average error = " + Math.Round(errorSum / train.GetLength(0) * 100, 5) + "% " + ((double)sw.ElapsedMilliseconds / 1000).ToString("#,0.000", sepByThous) + " sec");
 					}
 					++trainingSets;
 				} while (errorSum / train.GetLength(0) * 100 > terminatingErrorProcents); //while average error procent is greater tnah TEP - continue
@@ -128,10 +124,10 @@ namespace NNFunctions
 				#region Output
 				uint errCount = CheckForMistakes(ref network, ref test);
 
-				Console.WriteLine("\nAccuracy = " + Math.Round((double)(test.GetLength(0) - errCount) / test.GetLength(0) * 100, 3) + "%");
-				Console.WriteLine("Right answers from the test = " + (test.GetLength(0) - errCount).ToString("#,0", sepByThous) + " of " + test.GetLength(0).ToString("#,0", sepByThous));
-				Console.WriteLine("\nNumber of iterations = " + iteration.ToString("#,0", sepByThous));
-				Console.WriteLine("Training time = " + ((double)sw.ElapsedMilliseconds / 1000).ToString("#,0.000", sepByThous) + " sec");
+				//Console.WriteLine("\nAccuracy = " + Math.Round((double)(test.GetLength(0) - errCount) / test.GetLength(0) * 100, 3) + "%");
+				//Console.WriteLine("Right answers from the test = " + (test.GetLength(0) - errCount).ToString("#,0", sepByThous) + " of " + test.GetLength(0).ToString("#,0", sepByThous));
+				//Console.WriteLine("\nNumber of iterations = " + iteration.ToString("#,0", sepByThous));
+				//Console.WriteLine("Training time = " + ((double)sw.ElapsedMilliseconds / 1000).ToString("#,0.000", sepByThous) + " sec");
 
 				//network.SaveNetwork(@"C:\s\Neural.aaa");
 				#endregion
