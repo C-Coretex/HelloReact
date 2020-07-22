@@ -57,6 +57,10 @@ namespace NNFunctions
 		}
 		
 		public uint iteration;
+		public double errorSum;
+		public int trainingSets = 1;
+		
+		
 		private LabeledTrainingData[] test;
 		private NeuralNetwork network;
 
@@ -98,12 +102,10 @@ namespace NNFunctions
 				System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
 				sw.Start();
 
-				double errorSum;
 				uint i;
 				uint j;
 				double end;
 				double error;
-				int trainingSets = 1;
 				Neuron[] endValue;
 				do
 				{

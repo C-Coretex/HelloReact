@@ -46,7 +46,7 @@ namespace Functions
 				return new BadRequestObjectResult("The error occured at the Task call of the NeuralNetwork " + ex);
 			}
 		}
-
+		
 		[FunctionName("StopNN")]
 		public static async Task<IActionResult> StopNN([HttpTrigger(AuthorizationLevel.Function, "post", Route = null)] HttpRequest req, ILogger log)
 		{
@@ -55,14 +55,34 @@ namespace Functions
 			string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
 			var data = JsonConvert.DeserializeObject<int>(requestBody);
 
-			var NN = AsyncNN.asyncNeuralNetwork[data];
+			var NN = AsyncNN.asyncNeuralNetwork[data].CancellationToken;
 
-			NN.CancellationToken.Cancel();
-			NN.CancellationToken.Dispose();
+			NN.Cancel();
+			NN.Dispose();
+
+			return new OkObjectResult("success"); //Key so the used could access to the sertain NeuralNetwork
+		}
+		
+		[FunctionName("ContinueNN")]
+		public static async Task<IActionResult> ContinueNN([HttpTrigger(AuthorizationLevel.Function, "post", Route = null)] HttpRequest req, ILogger log)
+		{
+			log.LogInformation("C# HTTP trigger function processed a request.");
+
+			string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+			var data = JsonConvert.DeserializeObject<int>(requestBody);
+
+			var NN = AsyncNN.asyncNeuralNetwork[data];
+			
+			var cancellationToken = new CancellationTokenSource();
+
+			AsyncNN.asyncNeuralNetwork[data] = new AsyncNN.NN { CancellationToken = cancellationToken, Network = NN.Network };
+
+			Thread workerThread = new Thread(() => NN.Network.Start(cancellationToken)); // I don't know why it doesn't work without the '- 1'
+			workerThread.Start();
 			
 			return new OkObjectResult("success"); //Key so the used could access to the sertain NeuralNetwork
 		}
-
+		
 		[FunctionName("TestNN")]
 		public static async Task<IActionResult> TestNN([HttpTrigger(AuthorizationLevel.Function, "post", Route = null)] HttpRequest req, ILogger log)
 		{
@@ -84,6 +104,13 @@ namespace Functions
 			}
 		}
 		
+		public struct Response
+		{
+			public int iteration;
+			public int trainingSets;
+			public double errorSum;
+		}
+		
 		[FunctionName("GetNNState")]
 		public static async Task<IActionResult> GetNNState([HttpTrigger(AuthorizationLevel.Function, "post", Route = null)] HttpRequest req, ILogger log)
 		{
@@ -92,8 +119,27 @@ namespace Functions
 			string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
 			var data = JsonConvert.DeserializeObject<int>(requestBody);
 			
+			var NN = AsyncNN.asyncNeuralNetwork[data].Network;
 			
-			return new OkObjectResult("success   "); //Key so the used could access to the sertain NeuralNetwork
+			return new OkObjectResult(new Response{ iteration = (int)NN.iteration, trainingSets = NN.trainingSets, errorSum = NN.errorSum  }); //Key so the used could access to the sertain NeuralNetwork
 		}
+	
+		[FunctionName("DeleteNN")]
+		public static async Task<IActionResult> DeleteNN([HttpTrigger(AuthorizationLevel.Function, "post", Route = null)] HttpRequest req, ILogger log)
+		{
+			log.LogInformation("C# HTTP trigger function processed a request.");
+
+			string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+			var data = JsonConvert.DeserializeObject<int>(requestBody);
+
+			var NN = AsyncNN.asyncNeuralNetwork[data].CancellationToken;
+			
+			NN.Cancel();
+			NN.Dispose();
+			AsyncNN.asyncNeuralNetwork.Remove(data);
+
+			return new OkObjectResult("success"); //Key so the used could access to the sertain NeuralNetwork
+		}
+
 	}
 }
