@@ -38,15 +38,14 @@ namespace Functions
 				AsyncNN.asyncNeuralNetwork.Add(AsyncNN.key, new AsyncNN.NN{CancellationToken = cancellationToken, Network = new TeachNetwork()});
 				Thread workerThread = new Thread(() => AsyncNN.asyncNeuralNetwork[AsyncNN.key - 1].Network.Start(cancellationToken)); // I don't know why it doesn't work without the '- 1'
 				workerThread.Start();
+				
+				return new OkObjectResult(AsyncNN.key++); //Key so the used could access to the sertain NeuralNetwork
 			}
 			catch (Exception ex)
 			{
 				return new BadRequestObjectResult("The error occured at the Task call of the NeuralNetwork " + ex);
 			}
-
-			return new OkObjectResult(AsyncNN.key++); //Key so the used could access to the sertain NeuralNetwork
 		}
-
 
 		[FunctionName("StopNN")]
 		public static async Task<IActionResult> StopNN([HttpTrigger(AuthorizationLevel.Function, "post", Route = null)] HttpRequest req, ILogger log)
@@ -58,13 +57,31 @@ namespace Functions
 
 			var NN = AsyncNN.asyncNeuralNetwork[data];
 
-			uint test = NN.Network.iteration;
-
 			NN.CancellationToken.Cancel();
 			NN.CancellationToken.Dispose();
 			
+			return new OkObjectResult("success"); //Key so the used could access to the sertain NeuralNetwork
+		}
+
+		[FunctionName("TestNN")]
+		public static async Task<IActionResult> TestNN([HttpTrigger(AuthorizationLevel.Function, "post", Route = null)] HttpRequest req, ILogger log)
+		{
+			log.LogInformation("C# HTTP trigger function processed a request.");
+
+			string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+			var data = JsonConvert.DeserializeObject<int>(requestBody);
 			
-			return new OkObjectResult("success   " + NN.Network.iteration); //Key so the used could access to the sertain NeuralNetwork
+			try
+			{
+				var cancellationToken = new CancellationTokenSource();
+				var response = await Task.Run(() => AsyncNN.asyncNeuralNetwork[AsyncNN.key - 1].Network.Test(cancellationToken)); // I don't know why it doesn't work without the '- 1'
+			
+				return new OkObjectResult(response); //Key so the used could access to the sertain NeuralNetwork
+			}
+			catch (Exception ex)
+			{
+				return new BadRequestObjectResult("The error occured at the Task call of the NeuralNetwork " + ex);
+			}
 		}
 		
 		[FunctionName("GetNNState")]

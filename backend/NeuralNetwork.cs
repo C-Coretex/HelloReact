@@ -140,11 +140,17 @@ namespace NNFunctions
 			}, tokenSource2.Token);
 		}
 		
-		public async Task<int> Test(CancellationTokenSource tokenSource2)
+		public struct Response 
+		{
+			public int TestCount { get; set; }
+			public int ErrCount { get; set; }
+		}
+		
+		public async Task<Response> Test(CancellationTokenSource tokenSource2)
 		{
 			var errCount = await Task.Run(() => CheckForMistakes(ref network, ref test), tokenSource2.Token);
 			
-			return (int)errCount;
+			return new Response { TestCount = test.Length, ErrCount = (int)errCount};
 		}
 	}
 }
