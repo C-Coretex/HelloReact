@@ -18,7 +18,7 @@ namespace Functions
 		public struct NN
 		{
 			public CancellationTokenSource CancellationToken { get; set; }
-			public Task AsyncTask { get; set; }
+			public TeachNetwork Network { get; set; }
 		}
 		public static Dictionary<int, NN> asyncNeuralNetwork = new Dictionary<int, NN>();
 	}
@@ -35,14 +35,18 @@ namespace Functions
 
 			try
 			{
-				var curNN = new TeachNetwork();
+			//	var curNN = new TeachNetwork();
 
 				var cancellationToken = new CancellationTokenSource();
 
-				var task = curNN.Start(cancellationToken);
-				task.ConfigureAwait(false).GetAwaiter();
+			//	Thread workerThread = new Thread(() => curNN.Start(cancellationToken));
+				//workerThread.Start();
 
-				AsyncNN.asyncNeuralNetwork.Add(AsyncNN.asyncNeuralNetwork.Count, new AsyncNN.NN{CancellationToken = cancellationToken, AsyncTask = task});
+				//AsyncNN.asyncNeuralNetwork.Add(AsyncNN.asyncNeuralNetwork.Count, new AsyncNN.NN{CancellationToken = cancellationToken, Network = workerThread});
+			
+				AsyncNN.asyncNeuralNetwork.Add(AsyncNN.asyncNeuralNetwork.Count, new AsyncNN.NN{CancellationToken = cancellationToken, Network = new TeachNetwork()});
+				Thread workerThread = new Thread(() => AsyncNN.asyncNeuralNetwork[AsyncNN.asyncNeuralNetwork.Count - 1].Network.Start(cancellationToken));
+				workerThread.Start();
 			}
 			catch (Exception ex)
 			{
@@ -62,11 +66,26 @@ namespace Functions
 			var data = JsonConvert.DeserializeObject<int>(requestBody);
 
 			var NN = AsyncNN.asyncNeuralNetwork[data];
-			
+
+			uint test = NN.Network.iteration;
+
 			NN.CancellationToken.Cancel();
 			NN.CancellationToken.Dispose();
+			
+			
+			return new OkObjectResult("success   " + test); //Key so the used could access to the sertain NeuralNetwork
+		}
+		
+		[FunctionName("GetNNState")]
+		public static async Task<IActionResult> GetNNState([HttpTrigger(AuthorizationLevel.Function, "post", Route = null)] HttpRequest req, ILogger log)
+		{
+			log.LogInformation("C# HTTP trigger function processed a request.");
 
-			return new OkObjectResult("success"); //Key so the used could access to the sertain NeuralNetwork
+			string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+			var data = JsonConvert.DeserializeObject<int>(requestBody);
+			
+			
+			return new OkObjectResult("success   "); //Key so the used could access to the sertain NeuralNetwork
 		}
 	}
 }

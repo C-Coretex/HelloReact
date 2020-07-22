@@ -55,7 +55,10 @@ namespace NNFunctions
 
 			return errCount;
 		}
-
+		
+		public uint iteration;
+		private LabeledTrainingData[] test;
+		private NeuralNetwork network;
 
 		public async Task Start(CancellationTokenSource tokenSource2)
 		{
@@ -79,14 +82,14 @@ namespace NNFunctions
 
 				labelData = File.ReadAllBytes(path + "t10k-labels.idx1-ubyte");
 				imageData = File.ReadAllBytes(path + "t10k-images.idx3-ubyte");
-				var test = Reader.LoadDigitImages(labelData, imageData);
+				test = Reader.LoadDigitImages(labelData, imageData);
 
 				#endregion
 
 				#region Main part - network training
 				//Creating an object of NeuralNetwork with same parameters as we described in variables
 				//NeuralNetwork network = new NeuralNetwork(@"C:\s\Neural.aaa");
-				NeuralNetwork network = new NeuralNetwork(NeuronsAndLayers, -1, 1)
+				network = new NeuralNetwork(NeuronsAndLayers, -1, 1)
 				{
 					Moment = MomentTemp,
 					LearningRate = LearningRateTemp
@@ -96,7 +99,6 @@ namespace NNFunctions
 				sw.Start();
 
 				double errorSum;
-				uint iteration;
 				uint i;
 				uint j;
 				double end;
@@ -121,7 +123,7 @@ namespace NNFunctions
 
 						network.TeachNetwork(train[i].Label);
 
-						//if (iteration++ % refreshSpeed == 0)
+						if (iteration++ % 1800 == 0)
 							//Console.WriteLine("Iteration: " + trainingSets + " | " + iteration.ToString("#,0", sepByThous) + "  current error = " + error + "% " + "  average error = " + Math.Round(errorSum / train.GetLength(0) * 100, 5) + "% " + ((double)sw.ElapsedMilliseconds / 1000).ToString("#,0.000", sepByThous) + " sec");
 					
 						if(ct.IsCancellationRequested)
@@ -135,18 +137,14 @@ namespace NNFunctions
 				} while (errorSum / train.GetLength(0) * 100 > terminatingErrorProcents); //while average error procent is greater tnah TEP - continue
 				sw.Stop();
 				#endregion
-
-				#region Output
-				uint errCount = CheckForMistakes(ref network, ref test);
-
-				//Console.WriteLine("\nAccuracy = " + Math.Round((double)(test.GetLength(0) - errCount) / test.GetLength(0) * 100, 3) + "%");
-				//Console.WriteLine("Right answers from the test = " + (test.GetLength(0) - errCount).ToString("#,0", sepByThous) + " of " + test.GetLength(0).ToString("#,0", sepByThous));
-				//Console.WriteLine("\nNumber of iterations = " + iteration.ToString("#,0", sepByThous));
-				//Console.WriteLine("Training time = " + ((double)sw.ElapsedMilliseconds / 1000).ToString("#,0.000", sepByThous) + " sec");
-
-				//network.SaveNetwork(@"C:\s\Neural.aaa");
-				#endregion
 			}, tokenSource2.Token);
+		}
+		
+		public async Task<int> Test(CancellationTokenSource tokenSource2)
+		{
+			var errCount = await Task.Run(() => CheckForMistakes(ref network, ref test), tokenSource2.Token);
+			
+			return (int)errCount;
 		}
 	}
 }
