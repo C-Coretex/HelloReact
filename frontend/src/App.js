@@ -4,6 +4,7 @@ import "./style.css"
 
 import Timer from "./Resources/Timer"
 import FileSelector from "./Resources/FileSelector"
+import NeuralNetwork from "./Resources/NeuralNetwork"
 
 class App extends Component {
     render() {
@@ -15,6 +16,7 @@ class App extends Component {
                 <Timer />
                 <br />
                 <FileSelector />
+                <NeuralNetwork />
             </div>
         )
     }
