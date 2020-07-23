@@ -39,7 +39,7 @@ namespace Functions
 				Thread workerThread = new Thread(() => AsyncNN.asyncNeuralNetwork[AsyncNN.key - 1].Network.Start(cancellationToken)); // I don't know why it doesn't work without the '- 1'
 				workerThread.Start();
 				
-				return new OkObjectResult(AsyncNN.key++); //Key so the used could access to the sertain NeuralNetwork
+				return new OkObjectResult(AsyncNN.key++); //A key so the used could access to the sertain NeuralNetwork
 			}
 			catch (Exception ex)
 			{
@@ -52,15 +52,29 @@ namespace Functions
 		{
 			log.LogInformation("C# HTTP trigger function processed a request.");
 
-			string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-			var data = JsonConvert.DeserializeObject<int>(requestBody);
+			int data;
+			try
+			{
+				string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+				data = JsonConvert.DeserializeObject<int>(requestBody);
+			}
+			catch(Exception ex)
+			{
+				return new BadRequestObjectResult("Nicely done, I've received an error at the JSON deserialization:\n" + ex);
+			}
+			try
+			{
+				var NN = AsyncNN.asyncNeuralNetwork[data].CancellationToken;
 
-			var NN = AsyncNN.asyncNeuralNetwork[data].CancellationToken;
+				NN.Cancel();
+				NN.Dispose();
 
-			NN.Cancel();
-			NN.Dispose();
-
-			return new OkObjectResult("success"); //Key so the used could access to the sertain NeuralNetwork
+				return new OkObjectResult("success");
+			}
+			catch (Exception ex)
+			{
+				return new BadRequestObjectResult("Something bad happened:\n" + ex);
+			}
 		}
 		
 		[FunctionName("ContinueNN")]
@@ -68,19 +82,33 @@ namespace Functions
 		{
 			log.LogInformation("C# HTTP trigger function processed a request.");
 
-			string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-			var data = JsonConvert.DeserializeObject<int>(requestBody);
-
-			var NN = AsyncNN.asyncNeuralNetwork[data];
+			int data;
+			try
+			{
+				string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+				data = JsonConvert.DeserializeObject<int>(requestBody);
+			}
+			catch(Exception ex)
+			{
+				return new BadRequestObjectResult("Nicely done, I've received an error at the JSON deserialization:\n" + ex);
+			}
+			try
+			{
+				var NN = AsyncNN.asyncNeuralNetwork[data];
 			
-			var cancellationToken = new CancellationTokenSource();
+				var cancellationToken = new CancellationTokenSource();
 
-			AsyncNN.asyncNeuralNetwork[data] = new AsyncNN.NN { CancellationToken = cancellationToken, Network = NN.Network };
+				AsyncNN.asyncNeuralNetwork[data] = new AsyncNN.NN { CancellationToken = cancellationToken, Network = NN.Network };
 
-			Thread workerThread = new Thread(() => NN.Network.Start(cancellationToken)); // I don't know why it doesn't work without the '- 1'
-			workerThread.Start();
-			
-			return new OkObjectResult("success"); //Key so the used could access to the sertain NeuralNetwork
+				Thread workerThread = new Thread(() => NN.Network.Start(cancellationToken)); // I don't know why it doesn't work without the '- 1'
+				workerThread.Start();
+				
+				return new OkObjectResult("success"); //Key so the used could access to the sertain NeuralNetwork
+			}
+			catch (Exception ex)
+			{
+				return new BadRequestObjectResult("Something bad happened:\n" + ex);
+			}
 		}
 		
 		[FunctionName("TestNN")]
@@ -88,9 +116,16 @@ namespace Functions
 		{
 			log.LogInformation("C# HTTP trigger function processed a request.");
 
-			string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-			var data = JsonConvert.DeserializeObject<int>(requestBody);
-			
+			int data;
+			try
+			{
+				string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+				data = JsonConvert.DeserializeObject<int>(requestBody);
+			}
+			catch(Exception ex)
+			{
+				return new BadRequestObjectResult("Nicely done, I've received an error at the JSON deserialization:\n" + ex);
+			}
 			try
 			{
 				var cancellationToken = new CancellationTokenSource();
@@ -100,7 +135,7 @@ namespace Functions
 			}
 			catch (Exception ex)
 			{
-				return new BadRequestObjectResult("The error occured at the Task call of the NeuralNetwork " + ex);
+				return new BadRequestObjectResult("Something bad happened:\n" + ex);
 			}
 		}
 		
@@ -116,12 +151,27 @@ namespace Functions
 		{
 			log.LogInformation("C# HTTP trigger function processed a request.");
 
-			string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-			var data = JsonConvert.DeserializeObject<int>(requestBody);
-			
-			var NN = AsyncNN.asyncNeuralNetwork[data].Network;
-			
-			return new OkObjectResult(new Response{ iteration = (int)NN.iteration, trainingSets = NN.trainingSets, errorSum = NN.errorSum  }); //Key so the used could access to the sertain NeuralNetwork
+			int data;
+			try
+			{
+				string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+				data = JsonConvert.DeserializeObject<int>(requestBody);
+			}
+			catch(Exception ex)
+			{
+				return new BadRequestObjectResult("Nicely done, I've received an error at the JSON deserialization:\n" + ex);
+			}
+
+			try
+			{
+				var NN = AsyncNN.asyncNeuralNetwork[data].Network;
+
+				return new OkObjectResult(new Response { iteration = (int)NN.iteration, trainingSets = NN.trainingSets, errorSum = NN.errorSum }); //Key so the used could access to the sertain NeuralNetwork
+			}
+			catch(Exception ex)
+			{
+				return new BadRequestObjectResult("Something bad happened:\n" + ex);
+			}
 		}
 	
 		[FunctionName("DeleteNN")]
@@ -129,16 +179,31 @@ namespace Functions
 		{
 			log.LogInformation("C# HTTP trigger function processed a request.");
 
-			string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-			var data = JsonConvert.DeserializeObject<int>(requestBody);
+			int data;
+			try
+			{
+				string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+				data = JsonConvert.DeserializeObject<int>(requestBody);
+			}
+			catch(Exception ex)
+			{
+				return new BadRequestObjectResult("Nicely done, I've received an error at the JSON deserialization:\n" + ex);
+			}
 
-			var NN = AsyncNN.asyncNeuralNetwork[data].CancellationToken;
-			
-			NN.Cancel();
-			NN.Dispose();
-			AsyncNN.asyncNeuralNetwork.Remove(data);
+			try
+			{
+				var NN = AsyncNN.asyncNeuralNetwork[data].CancellationToken;
 
-			return new OkObjectResult("success"); //Key so the used could access to the sertain NeuralNetwork
+				NN.Cancel();
+				NN.Dispose();
+				AsyncNN.asyncNeuralNetwork.Remove(data);
+
+				return new OkObjectResult("success"); //Key so the used could access to the sertain NeuralNetwork
+			}
+			catch(Exception ex)
+			{
+				return new BadRequestObjectResult("Something bad happened:\n" + ex);
+			}
 		}
 
 	}
