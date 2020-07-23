@@ -16,6 +16,13 @@ class NeuralNetwork extends React.Component
 		this.LeraningRate = React.createRef();
 		this.Struct = React.createRef();
 		this.TerminatingError = React.createRef();
+		
+		this.state = {
+			startDisabled: false,
+			stopDisabled: true,
+			continueDisabled: true,
+			deleteDisabled: true
+		}
 	}
 	async startNN()
 	{
@@ -23,11 +30,10 @@ class NeuralNetwork extends React.Component
 		let NNStruct = {
 			MomentTemp: this.Moment.current.value===""? 0 : this.Moment.current.value,
 			LearningRateTemp: this.LeraningRate.current.value===""? 0 : this.LeraningRate.current.value,
-			NeuronsAndLayers: this.Struct.current.value===""? "0" : "784 " + this.Struct.current.value + " 10",
-			TerminatingErrorProcents:  this.TerminatingError.current.value===""? 0 : this.TerminatingError.current.value
+			NeuronsAndLayers: this.Struct.current.value===""? "" : "784 " + this.Struct.current.value + " 10",
+			TerminatingErrorProcents: this.TerminatingError.current.value===""? 0 : this.TerminatingError.current.value
 		}
-		console.log(NNStruct.NeuronsAndLayers)
-		
+		console.log(NNStruct)
 		const requestOptions = {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
@@ -36,9 +42,59 @@ class NeuralNetwork extends React.Component
 		
 		const response = await fetch(urlStartNN, requestOptions)
 		const data = await response.json();
-		this.setState({ NNId: data })
+		this.setState({ NNId: data, startDisabled: true, stopDisabled: false, deleteDisabled: false })
 		
 		console.log(this.state.NNId)
+	}
+	
+	async stopNN()
+	{
+		const requestOptions = {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify(this.state.NNId)
+		}
+		
+		const response = await fetch(urlStopNN, requestOptions)
+		const data = await response.json();
+		this.setState({stopDisabled: true, continueDisabled: false })
+		
+		console.log(this.state.NNId)
+	}
+	
+	async continueNN()
+	{
+		const requestOptions = {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				'Accept': 'application/json'
+			},
+			body: JSON.stringify(this.state.NNId)
+		}
+		
+		const response = await fetch(urlContinueNN, requestOptions)
+		const data = await response.json();
+		this.setState({ continueDisabled: true, stopDisabled: false })
+		
+		console.log(data)
+	}
+	async deleteNN()
+	{
+		const requestOptions = {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				'Accept': 'application/json'
+			},
+			body: JSON.stringify(this.state.NNId)
+		}
+		
+		const response = await fetch(urlDeleteNN, requestOptions)
+		const data = await response.json();
+		this.setState({ stopDisabled: true, deleteDisabled: true, startDisabled: false, continueDisabled: true })
+		
+		console.log(data)
 	}
 	
 	render(){
@@ -57,8 +113,10 @@ class NeuralNetwork extends React.Component
 					<label>Terminating error: <input type="number" ref={this.TerminatingError} placeholder="e.g. 0.00011"/></label>
 				</p>
 				
-				<button onClick={this.startNN.bind(this)}>Start NeuralNetwork teaching</button>
-				
+				<button onClick={this.startNN.bind(this)} disabled={this.state.startDisabled}>Start NeuralNetwork teaching</button>
+				<button onClick={this.stopNN.bind(this)} disabled={this.state.stopDisabled}>Stop NeuralNetwork teaching</button>
+				<button onClick={this.continueNN.bind(this)} disabled={this.state.continueDisabled}>Continue NeuralNetwork teaching</button>
+				<button onClick={this.deleteNN.bind(this)} disabled={this.state.deleteDisabled}>Delete NeuralNetwork</button>
 			</div>
 		)
 	}

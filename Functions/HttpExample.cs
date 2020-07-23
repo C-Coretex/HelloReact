@@ -93,9 +93,8 @@ namespace Functions
 				var NN = AsyncNN.asyncNeuralNetwork[data].CancellationToken;
 
 				NN.Cancel();
-				NN.Dispose();
 
-				return new OkObjectResult("success");
+				return new OkObjectResult(true);
 			}
 			catch (Exception ex)
 			{
@@ -129,7 +128,7 @@ namespace Functions
 				Thread workerThread = new Thread(() => NN.Network.Start(cancellationToken)); // I don't know why it doesn't work without the '- 1'
 				workerThread.Start();
 				
-				return new OkObjectResult("success"); //Key so the used could access to the sertain NeuralNetwork
+				return new OkObjectResult(true); //Key so the used could access to the sertain NeuralNetwork
 			}
 			catch (Exception ex)
 			{
@@ -224,7 +223,7 @@ namespace Functions
 				NN.Dispose();
 				AsyncNN.asyncNeuralNetwork.Remove(data);
 
-				return new OkObjectResult("success"); //Key so the used could access to the sertain NeuralNetwork
+				return new OkObjectResult(true); //Key so the used could access to the sertain NeuralNetwork
 			}
 			catch(Exception ex)
 			{
