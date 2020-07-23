@@ -26,16 +26,42 @@ namespace Functions
 
 	public static class HttpFunctions
 	{
+		
+		public struct NNSetup
+		{
+			public double MomentTemp { get; set; }
+			public double LearningRateTemp {get; set;}
+			public string NeuronsAndLayers {get; set;}
+			public double TerminatingErrorProcents {get; set;}
+		}
 		[FunctionName("StartNN")]
 		public static async Task<IActionResult> StartNN([HttpTrigger(AuthorizationLevel.Function, "post", Route = null)] HttpRequest req, ILogger log)
 		{
 			log.LogInformation("C# HTTP trigger function processed a request.");
-
+			
+			NNSetup data;
+			try
+			{
+				string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+				data = JsonConvert.DeserializeObject<NNSetup>(requestBody);
+			}
+			catch(Exception ex)
+			{
+				return new BadRequestObjectResult("Nicely done, I've received an error at the JSON deserialization:\n" + ex);
+			}
 			try
 			{
 				var cancellationToken = new CancellationTokenSource();
-				
-				AsyncNN.asyncNeuralNetwork.Add(AsyncNN.key, new AsyncNN.NN{CancellationToken = cancellationToken, Network = new TeachNetwork()});
+
+				var network = new TeachNetwork
+				{
+					MomentTemp = data.MomentTemp==0? 0.5 : data.MomentTemp,
+					LearningRateTemp = data.LearningRateTemp==0? 0.1 : data.LearningRateTemp,
+					NeuronsAndLayers = string.IsNullOrEmpty(data.NeuronsAndLayers)? "784 26+ 16 10" : data.NeuronsAndLayers,
+					terminatingErrorProcents = data.TerminatingErrorProcents==0? 0.00011 : data.TerminatingErrorProcents
+				};
+
+				AsyncNN.asyncNeuralNetwork.Add(AsyncNN.key, new AsyncNN.NN{CancellationToken = cancellationToken, Network = network});
 				Thread workerThread = new Thread(() => AsyncNN.asyncNeuralNetwork[AsyncNN.key - 1].Network.Start(cancellationToken)); // I don't know why it doesn't work without the '- 1'
 				workerThread.Start();
 				

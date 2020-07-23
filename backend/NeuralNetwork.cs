@@ -19,7 +19,6 @@ namespace NNFunctions
 													  //  [2]-Neurons In 2-nd HiddenLayer,[..],[n-1]-Neurons In (n-1)-th HiddenLayer, [n]-OutputNeurons"
 													  //   put + in each layer (except OUTPUT) to add bias
 		public double terminatingErrorProcents = 0.00011; //The average error procent on which we want to end training
-		//public static readonly uint refreshSpeed = 1800;
 
 		private uint CheckForMistakes(ref NeuralNetwork network, ref LabeledTrainingData[] testData)
 		{	
