@@ -169,6 +169,7 @@ namespace Functions
 			public int iteration;
 			public int trainingSets;
 			public double errorSum;
+			public string sw;
 		}
 		
 		[FunctionName("GetNNState")]
@@ -191,7 +192,7 @@ namespace Functions
 			{
 				var NN = AsyncNN.asyncNeuralNetwork[data].Network;
 
-				return new OkObjectResult(new Response { iteration = (int)NN.iteration, trainingSets = NN.trainingSets, errorSum = NN.errorSum }); //Key so the used could access to the sertain NeuralNetwork
+				return new OkObjectResult(new Response { iteration = (int)NN.iteration, trainingSets = NN.trainingSets, errorSum = NN.errorSum, sw = ((double)NN.sw.ElapsedMilliseconds / 1000).ToString("#,0.000", NN.sepByThous) }); //Key so the used could access to the sertain NeuralNetwork
 			}
 			catch(Exception ex)
 			{

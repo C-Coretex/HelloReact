@@ -10,18 +10,18 @@ namespace NNFunctions
 {
 	public class TeachNetwork
 	{
-        private CancellationToken ct;
+		private CancellationToken ct;
 		readonly static string path = @"C:\Users\valer\Desktop\GitSave\HelloReact\backend\data\";
 
 		public double MomentTemp = 0.5;
 		public double LearningRateTemp = 0.1;
 		public string NeuronsAndLayers = "784 26+ 16 10"; //"[0]-InputNeurons, [1]-Neurons In 1-st HiddenLayer,
-													  //  [2]-Neurons In 2-nd HiddenLayer,[..],[n-1]-Neurons In (n-1)-th HiddenLayer, [n]-OutputNeurons"
-													  //   put + in each layer (except OUTPUT) to add bias
+														  //  [2]-Neurons In 2-nd HiddenLayer,[..],[n-1]-Neurons In (n-1)-th HiddenLayer, [n]-OutputNeurons"
+														  //   put + in each layer (except OUTPUT) to add bias
 		public double terminatingErrorProcents = 0.00011; //The average error procent on which we want to end training
 
 		private uint CheckForMistakes(ref NeuralNetwork network, ref LabeledTrainingData[] testData)
-		{	
+		{
 			uint errCount = 0;
 
 			for (uint i = 0; i < testData.GetLength(0); ++i) //Run through all TEST units
@@ -54,10 +54,13 @@ namespace NNFunctions
 
 			return errCount;
 		}
-		
+
 		public uint iteration;
 		public double errorSum;
 		public int trainingSets = 1;
+
+		public System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
+		public NumberFormatInfo sepByThous = (NumberFormatInfo)CultureInfo.InvariantCulture.NumberFormat.Clone();
 		
 		
 		private LabeledTrainingData[] test;
@@ -73,7 +76,6 @@ namespace NNFunctions
 			{
 				ct.ThrowIfCancellationRequested();
 
-				var sepByThous = (NumberFormatInfo)CultureInfo.InvariantCulture.NumberFormat.Clone();
 				sepByThous.NumberGroupSeparator = " ";
 
 				#region Training&Test initialization
@@ -97,10 +99,9 @@ namespace NNFunctions
 					Moment = MomentTemp,
 					LearningRate = LearningRateTemp
 				};
-
-				System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
+				
 				sw.Start();
-
+				
 				uint i;
 				uint j;
 				double end;
@@ -124,12 +125,16 @@ namespace NNFunctions
 
 						network.TeachNetwork(train[i].Label);
 
-						if (iteration++ % 1800 == 0)
-							//Console.WriteLine("Iteration: " + trainingSets + " | " + iteration.ToString("#,0", sepByThous) + "  current error = " + error + "% " + "  average error = " + Math.Round(errorSum / train.GetLength(0) * 100, 5) + "% " + ((double)sw.ElapsedMilliseconds / 1000).ToString("#,0.000", sepByThous) + " sec");
-					
+						//if (iteration++ % 1800 == 0)
+						//Console.WriteLine("Iteration: " + trainingSets + " | " + iteration.ToString("#,0", sepByThous) + "  current error = " + error + "% " + "  average error = " + Math.Round(errorSum / train.GetLength(0) * 100, 5) + "% " + ((double)sw.ElapsedMilliseconds / 1000).ToString("#,0.000", sepByThous) + " sec");
+
+						++iteration;
+
 						if(ct.IsCancellationRequested)
 						{
 							Console.WriteLine("\nI'm disposing :'(\n");
+
+							sw.Stop();
 
 							ct.ThrowIfCancellationRequested();
 						}

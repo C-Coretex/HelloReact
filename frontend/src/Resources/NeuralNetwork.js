@@ -1,5 +1,8 @@
 import React from "react"
 
+import DenseTable from "./TableNN"
+
+
 const urlStartNN = "http://localhost:7071/api/StartNN"
 const urlStopNN = "http://localhost:7071/api/StopNN"
 const urlContinueNN = "http://localhost:7071/api/ContinueNN"
@@ -21,9 +24,18 @@ class NeuralNetwork extends React.Component
 			startDisabled: false,
 			stopDisabled: true,
 			continueDisabled: true,
-			deleteDisabled: true
+			deleteDisabled: true,
+			NNstate: null
 		}
 	}
+	
+	componentDidMount() {
+        this.IntervalID = setInterval(
+            () => this.getNNState(),
+            5000
+        )
+    }
+	
 	async startNN()
 	{
 		//console.log(this.Struct.current.value)
@@ -56,7 +68,6 @@ class NeuralNetwork extends React.Component
 		}
 		
 		const response = await fetch(urlStopNN, requestOptions)
-		const data = await response.json();
 		this.setState({stopDisabled: true, continueDisabled: false })
 		
 		console.log(this.state.NNId)
@@ -92,7 +103,31 @@ class NeuralNetwork extends React.Component
 		
 		const response = await fetch(urlDeleteNN, requestOptions)
 		const data = await response.json();
-		this.setState({ stopDisabled: true, deleteDisabled: true, startDisabled: false, continueDisabled: true })
+		
+		const state = {trainingSets:0, iteration:0, errorSum:0, sw:""}
+		this.setState({ stopDisabled: true, deleteDisabled: true, startDisabled: false, continueDisabled: true, NNState: state })
+		
+		
+		console.log(data)
+	}
+	async getNNState()
+	{
+		if (this.state.deleteDisabled || this.state.stopDisabled)
+			return;
+		
+		const requestOptions = {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				'Accept': 'application/json'
+			},
+			body: JSON.stringify(this.state.NNId)
+		}
+		
+		const response = await fetch(urlGetNNState, requestOptions)
+		const data = await response.json();
+		
+		this.setState({ NNstate: data })
 		
 		console.log(data)
 	}
@@ -117,6 +152,9 @@ class NeuralNetwork extends React.Component
 				<button onClick={this.stopNN.bind(this)} disabled={this.state.stopDisabled}>Stop NeuralNetwork teaching</button>
 				<button onClick={this.continueNN.bind(this)} disabled={this.state.continueDisabled}>Continue NeuralNetwork teaching</button>
 				<button onClick={this.deleteNN.bind(this)} disabled={this.state.deleteDisabled}>Delete NeuralNetwork</button>
+				
+				<p />
+				{this.state.NNstate? <DenseTable id={this.state.NNId} NNstate={this.state.NNstate} /> : null}
 			</div>
 		)
 	}
