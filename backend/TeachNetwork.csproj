@@ -4,6 +4,7 @@
     <OutputType>library</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <RootNamespace>Back_end</RootNamespace>
+    <RestoreFallbackFolders>clear</RestoreFallbackFolders>
   </PropertyGroup>
   
      <ItemGroup>
