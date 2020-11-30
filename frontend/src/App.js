@@ -1,25 +1,25 @@
-import React, {Component} from "react"
-import "./style.css"
+import logo from './logo.svg';
+import './App.css';
 
-
-import Timer from "./Resources/Timer"
-import FileSelector from "./Resources/FileSelector"
-import NeuralNetwork from "./Resources/NeuralNetwork"
-
-class App extends Component {
-    render() {
-        return (
-            <div>
-                <h1 className="navbar">Image recognition</h1>
-                <br />
-                <h2>Hey {this.props.name}!</h2>
-                <Timer />
-                <br />
-                <FileSelector />
-                <NeuralNetwork />
-            </div>
-        )
-    }
+function App() {
+  return (
+    <div className="App">
+      <header className="App-header">
+        <img src={logo} className="App-logo" alt="logo" />
+        <p>
+          Edit <code>src/App.js</code> and save to reload.
+        </p>
+        <a
+          className="App-link"
+          href="https://reactjs.org"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Learn React
+        </a>
+      </header>
+    </div>
+  );
 }
-            
-export default App
+
+export default App;
