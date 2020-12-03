@@ -2,8 +2,8 @@ import React from "react";
 //import axios from 'axios';
 
 import NeuralNetwork from "./components/NeuralNetwork"
-
-//import './scss/main.css'
+import LandingPage from "./components/Landing"
+import './scss/test.scss'
 
 
 export default function App() {
@@ -14,7 +14,9 @@ export default function App() {
       </header>
       <main>
         <div className="content">
-        <NeuralNetwork />
+          aoaoaoo
+          <LandingPage />
+          {/*<NeuralNetwork />*/}
         </div>
       </main>
     </div>

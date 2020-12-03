@@ -47,8 +47,8 @@ export async function stopNN(NNId) {
 		headers: { 'Content-Type': 'application/json' },
 		body: JSON.stringify(NNId)
 	}
-
-
+	
+	
 	try {
 		const response = await fetch(urlStopNN, requestOptions)
 		if (!response.ok) throw new Error('Problem in response with message: ' + response)
@@ -116,7 +116,8 @@ export async function getNNState(NNId) {
 		},
 		body: JSON.stringify(NNId)
 	}
-
+	
+	
 	try {
 		const response = await fetch(urlGetNNState, requestOptions)
 		if (!response.ok) throw new Error('Problem in response with message: ' + response)

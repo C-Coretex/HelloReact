@@ -1,8 +1,8 @@
 import React, { useState, useRef, useEffect } from "react";
-
+	
 import * as NNApi from "./NeuralNetworkFunctions"
-
-
+	
+	
 export default function NeuralNetwork() {
 
 	const NNId = useRef('');
@@ -18,9 +18,9 @@ export default function NeuralNetwork() {
 	const [continueDisabled, setContinueDisabled] = useState(true);
 	const [deleteDisabled, setDeleteDisabled] = useState(true);
 	const [NNstate, setNNstate] = useState(null);
-
-
-
+	
+	
+	
 	async function startNN() {
 		try {
 			const data = await NNApi.startNN({ moment: moment.current.value, learningRate: learningRate.current.value, struct: struct.current.value, terminatingError: terminatingError.current.value })
@@ -43,7 +43,7 @@ export default function NeuralNetwork() {
 		}
 
 	}
-
+	
 	async function stopNN() {
 		try {
 			const response = await NNApi.stopNN(NNId.current)
@@ -59,6 +59,7 @@ export default function NeuralNetwork() {
 			console.log(err)
 		}
 	}
+	
 	async function continueNN() {
 		try {
 			const response = await NNApi.continueNN(NNId.current)
@@ -77,6 +78,7 @@ export default function NeuralNetwork() {
 			console.log(err)
 		}
 	}
+	
 	async function deleteNN() {
 		try {
 			const response = await NNApi.deleteNN(NNId.current)
@@ -97,8 +99,7 @@ export default function NeuralNetwork() {
 			console.log(err)
 		}
 	}
-
-
+	
 	async function getNNState() {
 		const data = await NNApi.getNNState(NNId.current)
 
@@ -106,16 +107,7 @@ export default function NeuralNetwork() {
 
 		console.log(data)
 	}
-
-	/*	useEffect(() => {
-			getNNState()
-			const interval = setInterval(() => {
-				getNNState()
-			}, 5000)
-			
-			return () => clearInterval(interval)
-		}, [])*/
-
+	
 	return (
 		<div>
 			<p>
