@@ -2,11 +2,11 @@ import React from "react";
 
 import styles from '../scss/components/landing.module.scss'
 
-export default function LandingPage() {
+export default function LandingPage({ handlePageTransition }) {
 	return (
 		<div className='container'>
 			<div className={styles.fullpage_container}>
-				<div className={`${styles.button_create} ${styles.button}`}>
+				<div className={`${styles.button_create} ${styles.button}` }onClick={handlePageTransition}>
 					<p className={styles.create}>CREATE</p>
 					<p className={styles.neuralnetwork}>NEURAL NETWORK</p>
 				</div> 
