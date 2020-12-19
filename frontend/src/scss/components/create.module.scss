@@ -1,1 +1,152 @@
 @import "general.scss";
+
+input[type=text]{
+	border-radius: 5px;
+	border: #707070 solid 1px;
+	
+	width: 52px;
+	height: 30px;
+	
+	font-size: 18px;
+}
+input[type=text]:hover {
+	border: #0085d4 solid 1px;
+}
+input[type=text]:focus {
+	outline: 0;
+	border: #026199 solid 1px;
+}
+input[type=text]::placeholder {
+	font-size: 15px;
+	opacity: 0.8;
+}
+
+.header {
+	height: 70px;
+	width: 100%;
+
+	display: flex;
+	flex-direction: row;
+
+	align-items: center;
+	justify-content: center;
+
+	input {
+		width: 35%;
+		height: 45%;
+
+		border-radius: 50px;
+		border: none;
+
+		padding: 5px 30px;
+
+		font-size: 28px;
+		text-align: left;
+
+		color: #707070;
+		
+		&:focus{
+			outline: none;
+		}
+	}
+}
+
+.main {
+	width: 100%;
+	height: calc(100% - 70px);
+
+	display: flex;
+	flex-direction: column;
+
+	align-items: center;
+	justify-content: center;
+
+	background-color: white;
+
+	* {
+		color: #707070;
+		
+		font-weight: 600;
+		font-size: 20px;
+	}
+}
+
+.setup_container {
+	height: fit-content;
+	width: fit-content;
+
+	display: flex;
+	flex-direction: column;
+
+	align-items: center;
+	justify-content: center;
+}
+
+.row {
+	position: relative;
+
+	display: flex;
+	flex-direction: row;
+
+	align-items: center;
+
+	margin-bottom: 50px;
+}
+
+.imputnumber_container {
+	position: relative;
+
+	display: flex;
+	align-items: center;
+
+	
+	margin: 0 50px;
+	
+	> p {
+		margin-right: 20px;
+	}
+	
+	.absolute {
+		position: absolute;
+		top: -20px;
+		width: 100%;
+		
+		p {
+			margin: auto;
+			font-size: 16px;
+		}
+	}
+}
+
+.layers_container {
+}
+
+.bluebutton_palette {
+	margin-top: 50px;
+
+	width: 70%;
+	height: 50px;
+	background-color: #0085d4;
+
+	* {
+		color: white;
+	}
+}
+.bluebutton_palette:hover {
+	background: #006caa;
+}
+
+.inputfile_container{
+	margin: 50px 0;
+	
+	* {
+		outline: 0;
+		border: 0;
+		margin: 10px 0;
+		
+		&:focus {
+			outline: 0;
+			border: 0;
+		}
+	}
+}

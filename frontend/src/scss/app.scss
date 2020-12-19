@@ -1,14 +1,18 @@
+@import url(//db.onlinewebfonts.com/c/f2ecc6ef740fcf60de095b0b087dd58d?family=OCR+A+Extended);
+
 body {
-	background-color: #0085D4;
+	font-family: "OCR A Extended", sans-serif;
+	
+	background-color: #0085d4;
 	color: white;
-	
+
 	font-size: 28px;
-	
+
 	margin: 0;
-    padding: 0;
+	padding: 0;
 }
 
-::selection{
+::selection {
 	background-color: rgba(163, 4, 4, 0.753);
 	color: white;
 }
@@ -18,7 +22,11 @@ body {
 	text-align: center;
 }
 
-.container{
+.container {
 	margin: 0;
 	padding: 0;
+}
+
+p {
+	margin: 0;
 }

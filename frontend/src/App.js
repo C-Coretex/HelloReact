@@ -5,7 +5,7 @@ import NeuralNetwork from "./components/NeuralNetwork"
 
 import LandingPage from "./components/Landing"
 import CreatePage from "./components/CreateNN"
-//import
+
 import './scss/app.scss'
 
 
@@ -28,8 +28,7 @@ export default function App() {
     }
     
     function reset() {
-      let allPages = getPages()
-      
+      let allPages = getPages()  
       for (let i in allPages) {
         allPages[i] = false
       }
