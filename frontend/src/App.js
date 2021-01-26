@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 //import axios from 'axios';
 
 import NeuralNetwork from "./components/NeuralNetwork"
@@ -10,10 +10,14 @@ import './scss/app.scss'
 
 
 export default function App() {
+  const uniqueKey = useRef(0);
+  const NNstruct = useRef();
+  
+  
   const [pageEnabled, setpageEnabled] =
     useState({
-      'LandingPage': false,
-      'CreatePage': true,
+      'LandingPage': true,
+      'CreatePage': false,
       'NNPage': false
     });
 
@@ -43,14 +47,22 @@ export default function App() {
     
     setpageEnabled(allPages)
   }
-
+  
+  const uniqueKeyGenerator = () => {
+    return uniqueKey.current = uniqueKey.current + 1;
+  }
+  
+  function changeNNStruct(NNstructLocal) {
+    NNstruct = NNstructLocal
+  }
+  
   return (
     <div className="container">
       <main>
         <div className="content">
           {pageEnabled['LandingPage'] ? <LandingPage handlePageTransition={() => changeActiveWindow('CreatePage')} /> : null}
-          {pageEnabled['CreatePage'] ? <CreatePage /> : null}
-          {/*<NeuralNetwork />*/}
+          {pageEnabled['CreatePage'] ? <CreatePage changeNNStruct={changeNNStruct} handlePageTransition={() => changeActiveWindow('NNPage')} getKey={uniqueKeyGenerator}/> : null}
+          {pageEnabled['NNPage'] ? <NeuralNetwork /> : null}
         </div>
       </main>
     </div>

@@ -1,5 +1,3 @@
-
-
 .button {
 	border-radius: 50px;
 	
@@ -38,7 +36,22 @@
 	max-width: 100%;
 	height: 100vh;
 	max-height: 100%;
-	
+
 	margin: 0;
 	padding: 0;
+}
+
+.bluebutton_palette {
+	width: 70%;
+	height: 50px;
+	background-color: #0085d4;
+	
+	color: white;
+	
+	* {
+		color: white;
+	}
+}
+.bluebutton_palette:hover {
+	background: #006caa;
 }
